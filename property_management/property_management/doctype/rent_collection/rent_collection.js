@@ -256,16 +256,23 @@ frappe.ui.form.on("Rent Collection", "name1", function(frm) {
     }
 });
 
+
 frappe.ui.form.on("Rent Collection", "previous_month_reading", function(frm) {
-  var number = parseInt(frm.doc.current_month_reading);
-  var number1 = parseInt(frm.doc.previous_month_reading);
+  var number = parseFloat(frm.doc.current_month_reading);
+  var number1 = parseFloat(frm.doc.previous_month_reading);
   cur_frm.set_value("read_only_15", (number - number1));
 });
 frappe.ui.form.on("Rent Collection", "current_month_reading", function(frm) {
-  var number = parseInt(frm.doc.current_month_reading);
-  var number1 = parseInt(frm.doc.previous_month_reading);
+  var number = parseFloat(frm.doc.current_month_reading);
+  var number1 = parseFloat(frm.doc.previous_month_reading);
+  if (number < number1){
+      frappe.msgprint(__("Current month reading cannot be less than previous month reading"));
+  }  
+  else {
   cur_frm.set_value("read_only_15", (number - number1));
+  }
 });
+
 
 frappe.ui.form.on("Rent Collection", "validate", function(frm) {
   $.ajax({
@@ -293,4 +300,69 @@ frappe.ui.form.on("Rent Collection", "validate", function(frm) {
   console.log(error);
   }
   });
+});
+
+
+
+frappe.ui.form.on("Rent Collection", "onload", function(frm) {
+  cur_frm.fields_dict.previous_month_reading.$input.on("keypress", function(evt) {
+      var theEvent = evt || window.event;
+      var key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode( key );
+      var regex = /[0-9]|\./;
+      if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+      }
+
+  });
+
+});
+
+frappe.ui.form.on("Rent Collection", "onload", function(frm) {
+  cur_frm.fields_dict.current_month_reading.$input.on("keypress", function(evt) {
+      var theEvent = evt || window.event;
+      var key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode( key );
+      var regex = /[0-9]|\./;
+      if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+      }
+
+  });
+
+});
+frappe.ui.form.on("Rent Collection", "onload", function(frm) {
+  cur_frm.fields_dict.read_only_15.$input.on("keypress", function(evt) {
+{
+         var charCode = (evt.which) ? evt.which : event.keyCode
+            return false;
+ 
+      }
+
+  });
+
+});
+frappe.ui.form.on("Rent Collection", "onload", function(frm) {
+  cur_frm.fields_dict.eb_amount.$input.on("keypress", function(evt) {
+{
+         var charCode = (evt.which) ? evt.which : event.keyCode
+            return false;
+ 
+      }
+
+  });
+
+});
+frappe.ui.form.on("Rent Collection", "onload", function(frm) {
+  cur_frm.fields_dict.rent_total.$input.on("keypress", function(evt) {
+{
+         var charCode = (evt.which) ? evt.which : event.keyCode
+            return false;
+ 
+      }
+
+  });
+
 });

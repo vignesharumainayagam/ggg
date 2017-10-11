@@ -1,22 +1,78 @@
 // Copyright (c) 2017, Valiant Systems and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('EB Meter Reading', {
-	refresh: function(frm) {
 
-	}
+frappe.ui.form.on('EB Meter Reading', {
+	refresh: function(frm) {	
+
+  }
 });
+
+
+
+
+
+
+frappe.ui.form.on("EB Meter Reading", "onload", function(frm) {
+  cur_frm.fields_dict.previous_month_reading.$input.on("keypress", function(evt) {
+      var theEvent = evt || window.event;
+      var key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode( key );
+      var regex = /[0-9]|\./;
+      if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+      }
+
+  });
+
+});
+
+frappe.ui.form.on("EB Meter Reading", "onload", function(frm) {
+  cur_frm.fields_dict.current_month_reading.$input.on("keypress", function(evt) {
+      var theEvent = evt || window.event;
+      var key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode( key );
+      var regex = /[0-9]|\./;
+      if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+      }
+
+  });
+
+});
+
+frappe.ui.form.on("EB Meter Reading", "onload", function(frm) {
+  cur_frm.fields_dict.eb_usage.$input.on("keypress", function(evt) {
+{
+         var charCode = (evt.which) ? evt.which : event.keyCode
+            return false;
+ 
+      }
+
+  });
+
+});
+
+
+
 
 
 frappe.ui.form.on("EB Meter Reading", "previous_month_reading", function(frm) {
-	var number = parseInt(frm.doc.current_month_reading);
-	var number1 = parseInt(frm.doc.previous_month_reading);
-	cur_frm.set_value("eb_usage", (number - number1));
+	var number = parseFloat(frm.doc.current_month_reading);
+	var number1 = parseFloat(frm.doc.previous_month_reading);
+  cur_frm.set_value("eb_usage", (number - number1));
 });
 frappe.ui.form.on("EB Meter Reading", "current_month_reading", function(frm) {
-	var number = parseInt(frm.doc.current_month_reading);
-	var number1 = parseInt(frm.doc.previous_month_reading);
-	cur_frm.set_value("eb_usage", (number - number1));
+  var number = parseFloat(frm.doc.current_month_reading);
+  var number1 = parseFloat(frm.doc.previous_month_reading);
+  if (number < number1){
+      frappe.msgprint(__("Current month reading cannot be less than previous month reading"));
+  }  
+  else {
+  cur_frm.set_value("eb_usage", (number - number1));
+  }
 });
 frappe.ui.form.on("EB Meter Reading", "collect_rent", function(frm) {
     	localStorage.month = frm.doc.month;
@@ -25,10 +81,7 @@ frappe.ui.form.on("EB Meter Reading", "collect_rent", function(frm) {
     	localStorage.eb_usage = frm.doc.eb_usage;
 		window.location.replace(window.location.origin+"/desk#Form/Rent Collection/New Rent Collection");
 });
-
-    	
-
-
+  	
 frappe.ui.form.on("EB Meter Reading", "month", function(frm) {
     if (frm.doc.month == "01 January.") {
     frappe.call({
